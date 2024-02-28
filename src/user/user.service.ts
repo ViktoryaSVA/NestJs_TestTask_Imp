@@ -4,12 +4,14 @@ import { UserEntity } from '@app/user/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { sign } from 'jsonwebtoken';
-import { JWT_SECRET_KEY } from '@app/config';
 import { UserResponseInterface } from '@app/user/types/userResponse.interface';
 import { LoginUserDto } from '@app/user/dto/loginUser.dto';
 import { compare } from 'bcrypt';
 import { UpdateUserDto } from '@app/user/dto/updateUser.dto';
 import { BlackListEntity } from '@app/user/blackList/black-list.entity';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 @Injectable()
 export class UserService {
   constructor(
@@ -104,7 +106,7 @@ export class UserService {
         username: user.username,
         email: user.email,
       },
-      JWT_SECRET_KEY,
+      process.env.JWT_SECRET,
     );
   }
   buildUserResponse(user: UserEntity): UserResponseInterface {

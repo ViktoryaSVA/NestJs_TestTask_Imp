@@ -2,8 +2,10 @@ import { Injectable, NestMiddleware, UnauthorizedException } from '@nestjs/commo
 import { Response, NextFunction } from 'express';
 import { ExpressRequestInterface } from '@app/types/expressRequest.interface';
 import { JwtPayload, verify } from 'jsonwebtoken';
-import { JWT_SECRET_KEY } from '@app/config';
 import { UserService } from '@app/user/user.service';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
 
@@ -19,7 +21,7 @@ export class AuthMiddleware implements NestMiddleware {
     const token = req.headers.authorization.split(' ')[1];
 
     try {
-      const decoded: JwtPayload = verify(token, JWT_SECRET_KEY) as JwtPayload;
+      const decoded: JwtPayload = verify(token, process.env.JWT_SECRET) as JwtPayload;
       const user = await this.userService.findById(decoded.id);
 
       const isBlacklisted = await this.userService.checkTokenBlacklist(token);
